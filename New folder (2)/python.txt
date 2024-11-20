@@ -1,0 +1,30 @@
+from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+# Sample data
+data = [
+    {'id': 1, 'name': 'Alice', 'age': 25},
+    {'id': 2, 'name': 'Bob', 'age': 30}
+]
+
+# Route to get all data
+@app.route('/data', methods=['GET'])
+def get_data():
+    return jsonify(data)
+
+# Route to get data by id
+@app.route('/data/<int:data_id>', methods=['GET'])
+def get_data_by_id(data_id):
+    result = next((item for item in data if item['id'] == data_id), None)
+    return jsonify(result) if result else ('Not Found', 404)
+
+# Route to add new data
+@app.route('/data', methods=['POST'])
+def add_data():
+    new_data = request.get_json()
+    data.append(new_data)
+    return jsonify(new_data), 201
+
+if __name__ == '__main__':
+    app.run(debug=True)
